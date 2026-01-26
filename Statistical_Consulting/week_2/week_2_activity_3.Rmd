@@ -1,0 +1,347 @@
+---
+title: "Week 2: Activity 3"
+author: "Calum Smith"
+date: "2026-01-23"
+output: html_document
+geometry: margin=0.5in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+For each variable, it is important to highlight the units for each and specify them in the table to help make the data more clear.
+
+```{r, warning=FALSE, message=FALSE}
+# Packages required for the analysis
+library(palmerpenguins)
+library(gtsummary)
+library(dplyr)
+library(forcats)
+library(ggplot2)
+library(e1071)
+library(gt)
+library(naniar)
+library(tidyr)
+```
+## Deliverable 2
+
+The dataset below is of three different types of penguin species Adelie, Gentoo and Chinstrap, and includes particular measurements such as Island, Bill Length, Bill Depth, Flipper Length, Body Mass, Sex and Year. In the table below we have grouped the data by species and then stratified the columns by the above variables with the intention of clearly seeing the relationships between them. Included also is an overall column that displays the aggregated statistics. 
+
+Before we generate the table it is good practice to perform exploratory data analysis first to better understand the data and to inform us as to which statistics we should use to provide summaries.
+
+```{r}
+# Load the penguins data
+data(package = 'palmerpenguins')
+```
+
+Let us first look at the percentage of missing data in the Penguins dataset.
+```{r, out.width="75%", fig.align="center", warning=FALSE, message=FALSE}
+penguins %>%
+  rename(
+    "Bill Length" = bill_length_mm,
+    "Bill Depth" = bill_depth_mm,
+    "Flipper Length" = flipper_length_mm,
+    "Body Mass" = body_mass_g,
+    "Species" = species,
+    "Island" = island,
+    "Sex" = sex
+  ) %>%
+  gg_miss_var(show_pct = TRUE) +
+  labs(y = "Percentage of Missing Data", x = "Variables",
+       title = "Percentage of Missing Data by Variable")
+```
+
+
+Here we can see that there is only a few missing data with the highest being around 3.2% for the sex variable. 
+
+Below we investigate whether the variables we are analysing exhibit any skewness as this will influence our choice of statistic. For each Body Mass, Flipper Length, Bill Length and Bill Depth we display the histogram and box-plots. We have displayed the histograms and box-plots for Bill Length and Bill Depth on the same figure.
+
+### A. Body Mass Analysis
+
+```{r, out.width="75%", fig.align="center", warning=FALSE, message=FALSE}
+# Calculate the mean and median for each species first
+species_stats <- penguins %>%
+  filter(!is.na(body_mass_g)) %>%
+  group_by(species) %>%
+  summarise(
+    mean_mass = mean(body_mass_g),
+    median_mass = median(body_mass_g)
+  )
+
+# Create the plot
+ggplot(penguins, aes(x = body_mass_g, fill = species)) +
+  # Create the histograms
+  geom_histogram(bins = 15, 
+                 color = "black", 
+                 alpha = 0.6, 
+                 position = "identity") +
+  
+  # Add the vertical lines
+  geom_vline(data = species_stats, 
+             aes(xintercept = mean_mass), 
+             color = "red", 
+             linetype = "dashed", 
+             linewidth = 0.5) +
+  geom_vline(data = species_stats, 
+             aes(xintercept = median_mass), 
+             color = "blue", 
+             linewidth = 0.5) +
+  
+  # Split the plot into three panels
+  facet_wrap(~species, ncol = 1) +
+  
+  theme_minimal() +
+  labs(title = "Body Mass Distribution by Species",
+       subtitle = "Red dashed = Mean | Blue solid = Median",
+       x = "Body Mass (g)", y = "Count") +
+  theme(legend.position = "none")
+```
+
+```{r, out.width="75%", fig.align="center", warning=FALSE, message=FALSE}
+ggplot(penguins, 
+       aes(x = species, y = body_mass_g, fill = species)) +
+  geom_boxplot(alpha = 0.7) +
+  stat_summary(fun = mean, 
+               geom = "point", 
+               shape = 18, 
+               size = 3, 
+               color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Body Mass Distribution by Species",
+    x = "Species",
+    y = "Body Mass (g)",
+    fill = "Species"
+  )
+```
+
+### B. Flipper length Anaylsis
+
+```{r, out.width="75%", fig.align="center", warning=FALSE, message=FALSE}
+ggplot(penguins, 
+       aes(x = species, y = flipper_length_mm, fill = species)) +
+  geom_boxplot(alpha = 0.7) +
+  stat_summary(fun = mean, 
+               geom = "point", 
+               shape = 18, 
+               size = 3, 
+               color = "red") +
+  theme_minimal() +
+  labs(
+    title = "Flipper Length Distribution by Species",
+    x = "Species",
+    y = "Flipper Length (mm)",
+    fill = "Species"
+  )
+
+```
+```{r, message=FALSE, warning=FALSE, tidy=FALSE}
+# Calculate the mean and median for each species first
+species_stats_flipper <- penguins %>%
+  filter(!is.na(body_mass_g)) %>%
+  group_by(species) %>%
+  summarise(
+    mean_mass = mean(flipper_length_mm),
+    median_mass = median(flipper_length_mm)
+  )
+
+# Create the plot
+ggplot(penguins, 
+       aes(x = flipper_length_mm, fill = species)) +
+  # Create the histograms
+  geom_histogram(bins = 15, 
+                 color = "black", 
+                 alpha = 0.6, 
+                 position = "identity") +
+  
+  # Add the vertical lines
+  geom_vline(data = species_stats_flipper, aes(xintercept = mean_mass), 
+             color = "red", linetype = "dashed", size = 0.5) +
+  geom_vline(data = species_stats_flipper, aes(xintercept = median_mass), 
+             color = "blue", size = 0.5) +
+  
+  # Split the plot into three panels
+  facet_wrap(~species, ncol = 1) +
+  
+  theme_minimal() +
+  labs(title = "Flipper Length Distribution by Species",
+       subtitle = "Red dashed = Mean | Blue solid = Median",
+       x = "Flipper Length (mm)", y = "Count") +
+  theme(legend.position = "none")
+
+```
+
+
+### C. Bill Length and Depth analysis
+
+```{r, out.width="75%", fig.align="center", warning=FALSE, message=FALSE}
+penguins_long <- penguins %>%
+  pivot_longer(cols = c(bill_length_mm, bill_depth_mm), 
+               names_to = "measurement", 
+               values_to = "value") %>%
+  mutate(measurement = recode(measurement, 
+                              "bill_length_mm" = "Bill Length (mm)", 
+                              "bill_depth_mm" = "Bill Depth (mm)"))
+
+# Create the plot
+ggplot(penguins_long, 
+       aes(x = species, y = value, fill = species)) +
+  geom_boxplot(alpha = 0.7) +
+  stat_summary(fun = mean, 
+               geom = "point", 
+               shape = 18, 
+               size = 3, 
+               color = "red") +
+  facet_wrap(~measurement, scales = "free_y") +
+  theme_minimal() +
+  labs(
+    title = "Bill Dimensions by Species",
+    x = "Species",
+    y = "Measurement (mm)",
+    fill = "Species"
+  )
+```
+
+```{r, out.width="75%", fig.align="center", warning=FALSE, message=FALSE}
+# Prepare the data
+long_data <- penguins %>%
+  pivot_longer(cols = c(bill_length_mm, bill_depth_mm),
+               names_to = "measurement",
+               values_to = "value") %>%
+  mutate(measurement = recode(measurement, 
+                              "bill_length_mm" = "Bill Length (mm)", 
+                              "bill_depth_mm" = "Bill Depth (mm)")) %>%
+  filter(!is.na(value))
+
+long_stats <- long_data %>%
+  group_by(species, measurement) %>%
+  summarise(
+    mean_val = mean(value),
+    median_val = median(value),
+    .groups = 'drop'
+  )
+
+# Create the plot
+ggplot(long_data, 
+       aes(x = value, fill = species)) +
+  # Histograms
+  geom_histogram(bins = 15, 
+                 color = "black", 
+                 alpha = 0.6, 
+                 position = "identity") +
+  
+  # Vertical lines
+  geom_vline(data = long_stats, aes(xintercept = mean_val), 
+             color = "red", linetype = "dashed", size = 0.5) +
+  geom_vline(data = long_stats, aes(xintercept = median_val), 
+             color = "blue", size = 0.5) +
+  
+  # Facet grid: Species on rows, Measurement on columns
+  facet_grid(species ~ measurement, scales = "free") +
+  
+  theme_minimal() +
+  labs(title = "Bill Dimensions Distribution by Species",
+       subtitle = "Red dashed = Mean | Blue solid = Median",
+       x = "Measurement (mm)", 
+       y = "Count") +
+  theme(legend.position = "none")
+```
+
+
+A table of the skewness values for Bill Length, Bill Depth, Flipper Length and Body Mass.
+
+```{r, message=FALSE, warning=FALSE, tidy=FALSE}
+# Calculate skewness for all numeric variables at once
+skew_summary <- penguins %>%
+  # Select only the columns we care about
+  select(species, 
+         body_mass_g, 
+         flipper_length_mm, 
+         bill_length_mm, 
+         bill_depth_mm) %>%
+  
+  pivot_longer(cols = -species, 
+               names_to = "metric", 
+               values_to = "value") %>%
+  
+  # Group and calculate
+  group_by(species, metric) %>%
+  summarise(
+    skew_value = skewness(value, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  
+  pivot_wider(names_from = metric, 
+              values_from = skew_value)
+
+# Output the table cleanly
+knitr::kable(skew_summary, 
+             digits = 3, 
+             caption = "Skewness Values by Species",
+             # You must list ALL columns in order here
+             col.names = c("Species", "Bill Depth", "Bill Length", "Body Mass", "Flipper Length"))
+```
+
+### Summary of Findings
+
+As we can see from the above histogram of the Body Mass data for the Chinstrap, we can see the mean and median are close together in the histograms above. Moreoever, from the box-plots above we can see that there are only two outlier points in the dataset which are both for the Chinstrap penguin. The explicit value for the skewness are shown in the skewness table above. Here, all three values are within 0.5 implying that the data is mostly symmetrical. However, since we do have two outliers for the Chinstrap penguins, we will keep the Median (IQR) statistic for the body mass across all three species.
+
+For Flipper Length we conclude a similar result to the Body Mass. Here we can see that the distribution of the Flipper Lengths across the three species is mostly symmetric with the largest deviation being for the Gentoo, similar to the body mass. Moreover, the skewness values given above are, again, within -0.5 to 0.5 meaning we can conclude that the data is mostly symmetric. Looking at the box-plots we can see that there are a couple of outliers for Adelie species and so we conclude that using the Median (IQR) for the flipper length is appropriate to account for these outliers.
+
+For the Bill Depth and Length, we find similar conclusions as the above. Moreover, it is more appropriate to use the Median (IQR) in this case because the skewness value for the Bill Length of the Gentoo species is greater than 0.5. This tells use that there is moderate skewness in the data.
+
+```{r}
+# Assign data to variable
+df <- palmerpenguins::penguins
+
+# Column variables
+group_var <- 'species'
+
+# Row Variables
+vars <- names(select(df, -"species"))
+
+# Building the table 1
+table1 <- df %>%
+  select(all_of(c(group_var, vars))) %>%
+    tbl_summary(by = all_of(group_var),
+    # Rename the labels
+    label = list(island = "Island", 
+                 bill_length_mm = "Bill Length (mm)",
+                 bill_depth_mm = "Bill Depth (mm)", 
+                 flipper_length_mm = "Flipper Length (mm)",
+                 body_mass_g = "Body Mass (g)",
+                 sex = "Sex",
+                 year = "Year"),
+    statistic = list(
+      # Specific statistics
+      all_continuous() ~ "{median} ({p25}, {p75})",
+      all_categorical() ~ "{n} ({p}%)",
+      # Put specific variables AFTER the above
+      flipper_length_mm ~ "{median} ({p25}, {p75})"
+      ),
+      # Explicitly include the missing data
+      missing = "ifany",
+      missing_text = "(Missing)",
+      # Statistics about the missing data
+      missing_stat = "{N_miss} ({p_miss}%)"
+    
+    ) %>%
+  add_overall(last = FALSE) %>%
+  add_n() %>%
+  add_stat_label(
+    location = "row") %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("**Table 1. Penguin Characteristics**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Body Mass, Flipper Length, Bill Length and Bill Depth 
+    all show mild skew with some high-end values, so we report Median (IQR); 
+    Missing values shown explicitly") 
+
+table1 %>% 
+  as_gt() %>%
+  tab_options(
+    table.font.size = px(9),
+    table.width = pct(100)
+  )
+```

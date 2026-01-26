@@ -5,26 +5,74 @@ date: "2026-01-26"
 output: html_document
 ---
 
+```{r}
+renv::init()
+```
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+library(ggplot2)
+library(dplyr)
+library(gtsummary)
+library(e1071)
+library(gt)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+# Read the data into R
+df <- read.csv("data/st422_week3_subscription_v1.csv")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+# Column variables
+group_var <- 'region'
+
+# Row Variables
+vars <- names(select(df, -"region"))
+
+# Building the table 1
+table1 <- df %>%
+  select(all_of(c(group_var, vars))) %>%
+    tbl_summary(by = all_of(group_var),
+    statistic = list(
+      # Specific statistics
+      all_continuous() ~ "{median} ({p25}, {p75})",
+      all_categorical() ~ "{n} ({p}%)"),
+      # Explicitly include the missing data
+      missing = "ifany",
+      missing_text = "(Missing)",
+      # Statistics about the missing data
+      missing_stat = "{N_miss} ({p_miss}%)"
+    
+    ) %>%
+  add_overall(last = FALSE) %>%
+  add_n() %>%
+  add_stat_label(
+    location = "row") %>%
+  modify_header(label ~ "**Variable**") %>%
+  modify_caption("**Table 1. Region Characteristics**") %>%
+
+table1 %>% 
+  as_gt() %>%
+  tab_options(
+    table.font.size = px(9),
+    table.width = pct(100)
+  )
+
+```
+
+
+```{r}
+renv::snapshot()
+```
+
+
+
+
+
+
+
