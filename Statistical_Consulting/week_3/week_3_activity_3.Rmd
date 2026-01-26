@@ -17,20 +17,22 @@ library(gtsummary)
 library(e1071)
 library(gt)
 library(janitor)
+library(here)
 ```
 
 
 ```{r setup_params}
 # Select version here (v1, v2, or v3)
-data_version <- "v1" 
+data_version <- "v3" 
 
 # create file path to data selected
-data_path <- paste0("data/raw/st422_week3_subscription_", data_version, ".csv")
+data_path <- here("data", "raw", paste0("st422_week3_subscription_", data_version, ".csv"))
 
 # Load the data
 df <- read.csv(data_path)
 ```
 
+Clean the data by formatting the column names to be consistent across the datasets.
 ```{r}
 # Next we need to clean the data across the three sources
 df_clean <- df %>%
@@ -38,50 +40,119 @@ df_clean <- df %>%
   janitor::clean_names()
 ```
 
+A function to dynamically format the labels to make them look professional in the Table 1 below. 
+```{r}
+# A function to turn "tenure_months" into "Tenure Months"
+correct_labels <- function(x) {
+  x %>%
+    stringr::str_replace_all("_", " ") %>%
+    stringr::str_to_title() %>%
+    stringr::str_replace("Gbp", "(£)") %>%
+    stringr::str_replace("90d", "(90 Days)") %>%
+    stringr::str_replace("3m", "(90 Days)")
+}
 
-
+# Apply this to all current column names in the dataset
+dynamic_labels <- setNames(
+  as.list(correct_labels(names(df_clean))), 
+  names(df_clean)
+)
+```
 
 ```{r}
 # Column variables
 group_var <- 'region'
 
-# Row Variables
-vars <- names(select(df, -"region"))
-
 # Building the table 1
-table1 <- df %>%
-  select(all_of(c(group_var, vars))) %>%
-    tbl_summary(by = all_of(group_var),
+table1 <- df_clean %>%
+  select(
+    all_of(group_var),
+    where(is.numeric),
+    where(is.factor),
+    -any_of(c("customer_id", "signup_date"))
+  ) %>%
+  tbl_summary(
+    by = all_of(group_var),
+    label = dynamic_labels,
     statistic = list(
-      # Specific statistics
       all_continuous() ~ "{median} ({p25}, {p75})",
-      all_categorical() ~ "{n} ({p}%)"),
-      # Explicitly include the missing data
-      missing = "ifany",
-      missing_text = "(Missing)",
-      # Statistics about the missing data
-      missing_stat = "{N_miss} ({p_miss}%)"
-    
-    ) %>%
+      all_categorical() ~ "{n} ({p}%)"
+    ),
+    missing = "ifany",
+    missing_text = "(Missing)",
+    missing_stat = "{N_miss} ({p_miss}%)"
+  ) %>%
   add_overall(last = FALSE) %>%
   add_n() %>%
-  add_stat_label(
-    location = "row") %>%
+  add_stat_label(location = "row") %>%
   modify_header(label ~ "**Variable**") %>%
-  modify_caption("**Table 1. Region Characteristics**") %>%
+  modify_caption(paste("**Table 1. Characteristics by", 
+                       tools::toTitleCase(group_var), 
+                       "(Data Version:", data_version, ")**"))
 
-table1 %>% 
+table1_formatted <- table1 %>% 
   as_gt() %>%
-  tab_options(
-    table.font.size = px(9),
-    table.width = pct(100)
+  gt::tab_options(
+    table.font.size = gt::px(9),
+    table.width = gt::pct(100)
+  ) %>%
+  gt::gtsave(
+    filename = here::here("outputs", "tables",
+                          paste0("table_1_", data_version, ".html"))
   )
 
+table1_formatted
 ```
 
+```{r}
+target_var <- "tenure_months"
 
+boxplot_p <- ggplot(df_clean, aes(x = .data[[group_var]],
+                                  y = .data[[target_var]],
+                                  fill = .data[[group_var]])) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = paste("Distribution of", dynamic_labels[[target_var]], "by",
+                  dynamic_labels[[group_var]]),
+    subtitle = paste("Dataset Version:", data_version),
+    x = dynamic_labels[[group_var]],
+    y = dynamic_labels[[target_var]],
+    fill = dynamic_labels[[group_var]]
+  ) +
+  theme(legend.position = "none")
 
+boxplot_p
 
+ggsave(here::here("outputs", "figures",
+                  paste0("boxplot_", data_version, ".png")), boxplot_p)
+```
+
+```{r}
+hist_var <- "monthly_fee_gbp"
+dynamic_bins <- ceiling(sqrt(nrow(df_clean)))
+
+histogram_p <- ggplot(df_clean, aes(x = .data[[hist_var]])) +
+  geom_histogram(
+    fill = "steelblue",
+    color = "white",
+    bins = dynamic_bins
+  ) +
+  theme_minimal() +
+  labs(
+    title = paste("Frequency Distribution of", dynamic_labels[[hist_var]]),
+    subtitle = paste0("Dataset: ", data_version, 
+                      " (Bins calculated via Square-root rule: ",
+                      dynamic_bins, ")"),
+    x = dynamic_labels[[hist_var]],
+    y = "Frequency"
+  )
+
+histogram_p
+
+ggsave(here::here("outputs", "figures", 
+                  paste0("histogram_",data_version, ".png")), histogram_p)
+```
 
 
 
