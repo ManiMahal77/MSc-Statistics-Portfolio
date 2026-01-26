@@ -5,27 +5,41 @@ date: "2026-01-26"
 output: html_document
 ---
 
-```{r}
-renv::init()
-```
-
-```{r setup, include=FALSE}
+```{r, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
+rm(list=ls())
 library(ggplot2)
 library(dplyr)
 library(gtsummary)
 library(e1071)
 library(gt)
+library(janitor)
 ```
 
+
+```{r setup_params}
+# Select version here (v1, v2, or v3)
+data_version <- "v1" 
+
+# create file path to data selected
+data_path <- paste0("data/raw/st422_week3_subscription_", data_version, ".csv")
+
+# Load the data
+df <- read.csv(data_path)
+```
 
 ```{r}
-# Read the data into R
-df <- read.csv("data/st422_week3_subscription_v1.csv")
+# Next we need to clean the data across the three sources
+df_clean <- df %>%
+  mutate(across(where(is.character), as.factor)) %>%  # Ensure strings are factors
+  janitor::clean_names()
 ```
+
+
+
 
 ```{r}
 # Column variables
@@ -65,10 +79,6 @@ table1 %>%
 
 ```
 
-
-```{r}
-renv::snapshot()
-```
 
 
 
