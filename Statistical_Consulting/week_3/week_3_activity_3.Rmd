@@ -23,10 +23,10 @@ library(here)
 
 ```{r setup_params}
 # Select version here (v1, v2, or v3)
-data_version <- "v3" 
+data_version <- "v1" 
 
 # create file path to data selected
-data_path <- here("data", "raw", paste0("st422_week3_subscription_", data_version, ".csv"))
+data_path <- here("week_3", "data", "raw", paste0("st422_week3_subscription_", data_version, ".csv"))
 
 # Load the data
 df <- read.csv(data_path)
@@ -97,7 +97,7 @@ table1_formatted <- table1 %>%
     table.width = gt::pct(100)
   ) %>%
   gt::gtsave(
-    filename = here::here("outputs", "tables",
+    filename = here::here("week_3", "outputs", "tables",
                           paste0("table_1_", data_version, ".html"))
   )
 
@@ -124,7 +124,7 @@ boxplot_p <- ggplot(df_clean, aes(x = .data[[group_var]],
 
 boxplot_p
 
-ggsave(here::here("outputs", "figures",
+ggsave(here::here("week_3", "outputs", "figures",
                   paste0("boxplot_", data_version, ".png")), boxplot_p)
 ```
 
@@ -150,7 +150,7 @@ histogram_p <- ggplot(df_clean, aes(x = .data[[hist_var]])) +
 
 histogram_p
 
-ggsave(here::here("outputs", "figures", 
+ggsave(here::here("week_3", "outputs", "figures", 
                   paste0("histogram_",data_version, ".png")), histogram_p)
 ```
 

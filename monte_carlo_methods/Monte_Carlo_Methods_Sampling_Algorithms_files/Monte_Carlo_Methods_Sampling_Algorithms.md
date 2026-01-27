@@ -15,19 +15,29 @@ set.seed(20)
 
 Let $Y = X^\alpha$ where $\alpha = 2k+1$ for
 $k \in \mathbb{N} \cup \{0\}$.The cumulative distribution function (CDF)
-of $Y$, $F_Y(y)$, is given by: $$\begin{aligned}
+of $Y$, $F_Y(y)$, is given by: 
+
+$$\begin{aligned}
     F_Y(y) &= \mathbb{P}(Y \le y) \\
     &= \mathbb{P}(X^\alpha \le y) \\
     &= \mathbb{P}(X \le y^{1/\alpha}) \\
     &= F_X(y^{1/\alpha})
-\end{aligned}$$ Since $\alpha$ is odd, the function $g(x) = x^\alpha$ is
+\end{aligned}$$ 
+
+Since $\alpha$ is odd, the function $g(x) = x^\alpha$ is
 strictly increasing and invertible. The CDF of a Laplace random variable
-with $\mu=0$ and $b=1$ if given by $$F_X(x) =
+with $\mu=0$ and $b=1$ if given by 
+
+$$F_X(x) =
 \begin{cases}
     \frac{1}{2} e^x & \text{if } x < 0 \\
     1 - \frac{1}{2} e^{-x} & \text{if } x \geq 0
-\end{cases}$$ From the above we evaluate the Laplace CDF at
-$x=y^{1/\alpha}$ to give the CDF of Y, $$F_Y(y) =
+\end{cases}$$ 
+
+From the above we evaluate the Laplace CDF at
+$x=y^{1/\alpha}$ to give the CDF of Y, 
+
+$$F_Y(y) =
 \begin{cases}
     \frac{1}{2} e^{y^{1/\alpha}} & \text{if } y < 0 \\
     1 - \frac{1}{2} e^{-y^{1/\alpha}} & \text{if } y \ge 0
@@ -114,7 +124,7 @@ samples and overlay the theoretical probability density function (PDF)
 derived in part (a).
 
 For $\alpha = 1$, the density of $Y$ is the Laplace distribution as
-described above so we get the characteristic tent shape centred at 0. As
+described above so we get the characteristic tent shape centered at 0. As
 we increase the value of $\alpha$, the density of $Y$ gets stretched and
 the tails become very heavy. This makes sense because for example, if
 $X=3$ then under the transformation with $\alpha=3$ we have that
@@ -206,7 +216,7 @@ In order to analyse the behaviour of the densities we need to write them
 both with respect to $x$. To determine the value of $\alpha$ we need to
 examine the behaviour of ratio of the densities at:$x \to 0$ since this
 is the value at which we get the mode for both densities$x \to \infty$
-to check how the tails behaveChecking each limit in turn we get:
+to check how the tails behave. Checking each limit in turn we get:
 $$\lim_{x \to 0} \frac{p(x)}{q(x)} = \lim_{x \to 0} \frac{\frac{1}{2\alpha}x^{\frac{1}{\alpha}-1} e^{-{|x^{\frac{1}{\alpha}}|}}}{q(x)}$$
 We know that the $t$-distribution with $\nu$ degrees of freedom has a
 finite constant mode for any $\nu \in (0, \infty)$ so we can write

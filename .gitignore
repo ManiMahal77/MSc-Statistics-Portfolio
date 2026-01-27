@@ -1,6 +1,13 @@
 .Rproj.user
 .Rhistory
 .RData
+.Ruserdata
 .httr-oauth
 .DS_Store
 .quarto
+Thumbs.db
+
+renv/library/
+renv/python/
+renv/staging/
+renv/local/
