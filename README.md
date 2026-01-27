@@ -5,7 +5,11 @@ I am currently a masters student at Warwick University studying for an MSc in St
 
 ## Projects
 
-### 📂 [1. Monte Carlo Simulation](Monte_Carlo_Rejection_Importance/)
+### 📂 [1. Monte Carlo Methods](monte_carlo_methods/)
 * **Focus:** Inverse Transform Sampling, Rejection Sampling Optimization, and Importance Sampling.
 * **Tech:** R, R Markdown, LaTeX.
 * **Key Result:** Demonstrated that Importance Sampling can reduce variance even
+
+### 📂 [2. Statistical Consulting](statistical_consulting/)
+* **Focus:** Statistical Anaylsis, Reproducibility
+* **Tech:** R, R Markdown, LaTeX.
