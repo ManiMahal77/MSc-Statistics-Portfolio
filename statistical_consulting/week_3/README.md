@@ -45,19 +45,9 @@ To replicate the analysis:
     ├── HANDOVER_LOG.md
     ├── outputs
     │   ├── figures
-    │   │   ├── boxplot_v1.png
-    │   │   ├── boxplot_v2.png
-    │   │   ├── boxplot_v3.png
-    │   │   ├── histogram_v1.png
-    │   │   ├── histogram_v2.png
-    │   │   └── histogram_v3.png
     │   └── tables
-    │       ├── table_1_v1.html
-    │       ├── table_1_v2.html
-    │       └── table_1_v3.html
     ├── README.md
     ├── reports
-    │   ├── week_3_activity_3.html
     │   └── week_3_activity_3.Rmd
     └── src
     ```
