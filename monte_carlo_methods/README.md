@@ -35,7 +35,7 @@ The full report includes:
 * **Density Overlays:** Validating sample histograms against theoretical PDFs.
 
 ## How to View
-📄 [Click here to view the full rendered report with plots and derivation](Monte_Carlo_Methods_Sampling_Algorithms.md)
+📄 [Click here to view the full rendered report with plots and derivation](Monte_Carlo_Methods_Sampling_Algorithms_files/Monte_Carlo_Methods_Sampling_Algorithms.md)
 *(Note: Please click the link above to see the mathematical notation and graphs rendered correctly).*
 
 ## Author
