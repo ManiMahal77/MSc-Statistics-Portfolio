@@ -32,26 +32,26 @@ This project uses `renv` for dependency management to ensure the analysis is rep
 ## 4. Run Steps
 To replicate the analysis:
 
-1.  **Verify Directory Structure:** Ensure your project has the following structure relative to the project root:
-    ```text
-    week_3
-   ├── data
-   │   ├── processed
-   │   └── raw
-   │       ├── st422_week3_subscription_v1.csv
-   │       ├── st422_week3_subscription_v2.csv
-   │       └── st422_week3_subscription_v3.csv
-   ├── HANDOVER.md
-   ├── HANDOVER_LOG.md
-   ├── outputs
-   │   ├── figures
-   │   └── tables
-   ├── README.md
-   ├── reports
-   │   └── week_3_activity_3.Rmd
-   └── src
-   
+1. **Verify Directory Structure:** Ensure your project has the following structure relative to the project root:
 
+```text
+week_3
+├── data
+│   ├── processed
+│   └── raw
+│       ├── st422_week3_subscription_v1.csv
+│       ├── st422_week3_subscription_v2.csv
+│       └── st422_week3_subscription_v3.csv
+├── HANDOVER.md
+├── HANDOVER_LOG.md
+├── outputs
+│   ├── figures
+│   └── tables
+├── README.md
+├── reports
+│   └── week_3_activity_3.Rmd
+└── src
+```
 2.  **Execute via R Console:**
     You can generate the HTML report and outputs for a specific dataset version by running the `rmarkdown::render` command in your RStudio Console. 
     
