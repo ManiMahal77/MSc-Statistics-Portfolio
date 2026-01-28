@@ -23,7 +23,7 @@ This project uses `renv` for dependency management to ensure the analysis is rep
 * `here` (Relative file paths)
 
 **How to restore the environment:**
-1.  Open the project in RStudio.
+1.  Open the project in RStudio, make sure to double-click the `.Rproj` file to open it properly
 2.  Run the following command in the console to install the exact package versions used in this analysis:
     ```r
     renv::restore()
