@@ -55,8 +55,15 @@ To replicate the analysis:
 2.  **Execute via R Console:**
     You can generate the HTML report and outputs for a specific dataset version by running the `rmarkdown::render` command in your RStudio Console. 
     
-    *Make sure to change the `data_version` parameter as needed ("v1", "v2", or "v3").*
-
+    *Make sure to change the `data_version` parameter as needed ("v1", "v2", or "v3"). Moreover, you can change the following parameters in       the YAML header in the top of the report .Rmd file to suit the analysis you want to perform.:*
+    ```r
+    params:
+     data_version: "v1"
+     group_var: "region"
+     target_var: "tenure_months"
+     hist_var: "monthly_fee_gbp"
+    ``` 
+   
     ```r
     # Example: Render the report using Data Version 1
     rmarkdown::render("week_3/reports/week_3_activity_3.Rmd", params = list(data_version = "v1", group_var="region"))
