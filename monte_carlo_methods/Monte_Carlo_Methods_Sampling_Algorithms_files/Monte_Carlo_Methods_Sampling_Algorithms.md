@@ -15,27 +15,27 @@ set.seed(20)
 
 Let $Y = X^\alpha$ where $\alpha = 2k+1$ for
 $k \in \mathbb{N} \cup \{0\}$.The cumulative distribution function (CDF)
-of $Y$, $F_Y(y)$, is given by: 
+of $Y$, $F_Y(y)$, is given by:
 
 $$\begin{aligned}
     F_Y(y) &= \mathbb{P}(Y \le y) \\
     &= \mathbb{P}(X^\alpha \le y) \\
     &= \mathbb{P}(X \le y^{1/\alpha}) \\
     &= F_X(y^{1/\alpha})
-\end{aligned}$$ 
+\end{aligned}$$
 
-Since $\alpha$ is odd, the function $g(x) = x^\alpha$ is
-strictly increasing and invertible. The CDF of a Laplace random variable
-with $\mu=0$ and $b=1$ if given by 
+Since $\alpha$ is odd, the function $g(x) = x^\alpha$ is strictly
+increasing and invertible. The CDF of a Laplace random variable with
+$\mu=0$ and $b=1$ if given by
 
 $$F_X(x) =
 \begin{cases}
     \frac{1}{2} e^x & \text{if } x < 0 \\
     1 - \frac{1}{2} e^{-x} & \text{if } x \geq 0
-\end{cases}$$ 
+\end{cases}$$
 
-From the above we evaluate the Laplace CDF at
-$x=y^{1/\alpha}$ to give the CDF of Y, 
+From the above we evaluate the Laplace CDF at $x=y^{1/\alpha}$ to give
+the CDF of Y,
 
 $$F_Y(y) =
 \begin{cases}
@@ -87,8 +87,10 @@ $$  F_Y^{-1}(u) =
   \begin{cases}
       [\ln(2u)]^\alpha & \text{if } 0 < u \le \frac{1}{2} \\
       [-\ln(2(1-u))]^\alpha & \text{if } \frac{1}{2} < u < 1 
-  \end{cases}$$ where the ranges of $u$ are found by looking at how the
-the CDF changes for $y \in (-\infty, 0)$ and $y\in (0, \infty)$.
+  \end{cases}$$
+
+where the ranges of $u$ are found by looking at how the the CDF changes
+for $y \in (-\infty, 0)$ and $y\in (0, \infty)$.
 
 ## Implementation
 
@@ -124,10 +126,10 @@ samples and overlay the theoretical probability density function (PDF)
 derived in part (a).
 
 For $\alpha = 1$, the density of $Y$ is the Laplace distribution as
-described above so we get the characteristic tent shape centered at 0. As
-we increase the value of $\alpha$, the density of $Y$ gets stretched and
-the tails become very heavy. This makes sense because for example, if
-$X=3$ then under the transformation with $\alpha=3$ we have that
+described above so we get the characteristic tent shape centered at 0.
+As we increase the value of $\alpha$, the density of $Y$ gets stretched
+and the tails become very heavy. This makes sense because for example,
+if $X=3$ then under the transformation with $\alpha=3$ we have that
 $Y=3^3=27$ and so we are spreading out the density for values of $X$.
 Moreover, the values close to 0 get even closer due to $\alpha$ which
 causes the spike as $\alpha$ increases.
@@ -208,7 +210,9 @@ ggplot(trimmed_plot_data, aes(x = y)) +
 For a distribution with PDF $q(x)$ to be a valid proposal distribution
 for the target distribution with PDF $p(x)$, there must exist a finite
 constant $M$ such that the ratio $p(x)/q(x)$ is bounded for all $x$:
+
 $$\frac{p(x)}{q(x)} \le M \quad \text{for all } x \in (-\infty,\infty)$$
+
 Where our target is
 $p(x) = \frac{1}{2\alpha}x^{\frac{1}{\alpha}-1} e^{-{|x^{\frac{1}{\alpha}}|}}$
 and the proposal $q(x)$ is the $t$-distribution given in the question.
@@ -217,12 +221,16 @@ both with respect to $x$. To determine the value of $\alpha$ we need to
 examine the behaviour of ratio of the densities at:$x \to 0$ since this
 is the value at which we get the mode for both densities$x \to \infty$
 to check how the tails behave. Checking each limit in turn we get:
+
 $$\lim_{x \to 0} \frac{p(x)}{q(x)} = \lim_{x \to 0} \frac{\frac{1}{2\alpha}x^{\frac{1}{\alpha}-1} e^{-{|x^{\frac{1}{\alpha}}|}}}{q(x)}$$
+
 We know that the $t$-distribution with $\nu$ degrees of freedom has a
 finite constant mode for any $\nu \in (0, \infty)$ so we can write
 $\lim_{x\to 0}q(x)=C$ for some $C>0$. Now, we have that the limit
 reduces to
+
 $$\lim_{x \to 0} \frac{p(x)}{q(x)} = \frac{1}{2\alpha C} \lim_{x\to 0} x^{\frac{1}{\alpha} - 1}$$
+
 So the limit of the ratio depends on the sign of $\frac{1}{\alpha} - 1$.
 Now we consider two cases:$\alpha=1$: In this case the limit reduces to
 $1/2C$ which is a finite positive constant. For the case when
@@ -390,10 +398,15 @@ described in question 1. Let $f(x)$ be the target density and let $g(x)$
 be the proposal density. We have
 
 $$f(x) = C_1(1+\frac{t^2}{2})^{-3/2} \quad \text{for } C_1=\frac{\Gamma(3/2)}{\sqrt{2\pi}\Gamma(1)}$$
+
 and
+
 $$g(x) = C_2e^{-x^2/2} \quad \text{for } C_2 = \frac{1}{\sqrt{2\pi}}$$
+
 We can re-write the ratio as
+
 $$\frac{C_1}{C_2}\lim_{x\to \infty} \frac{e^{x^2/2}}{(1+\frac{x^2}{2})^{3/2}}$$
+
 If we examine the ratio as $x \to \infty$ we can see that the numerator
 grows exponentially fast whereas the denominator only grows polynomially
 fast. This means the ratio is dominated by the numerator as
@@ -405,10 +418,13 @@ An importance sampling algorithm can be constructed to estimate the
 expectation of a function $\varphi(T)$, where $T \sim f_T(\cdot;2)$
 using a proposal $g(t)$ which is the density of a $N(0,1)$ random
 variable. The fundamental principle of importance sampling is based on
-the identity: $$\begin{align*}
+the identity: $$
+    \begin{align*}
         \mathbb{E}_f[\varphi(T)] = \int \varphi(t)\frac{f_T(t)}{g(t)}g(t)dt = \mathbb{E}_g[\varphi(T)w(T)]
-    \end{align*}$$ where the importance weights are defined as
-$w(T)=\frac{f_T(t)}{g(t)}$.
+    \end{align*}
+    $$
+
+where the importance weights are defined as $w(T)=\frac{f_T(t)}{g(t)}$.
 
 The proposal density of $N(0,1)$ is generally not recommended as a
 proposal because this will result in an estimator with infinite
