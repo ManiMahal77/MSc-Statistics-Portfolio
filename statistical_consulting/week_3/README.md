@@ -58,6 +58,9 @@ To replicate the analysis:
     *Make sure to change the `data_version` parameter as needed ("v1", "v2", or "v3").*
 
     ```r
+    # Example: Render the report using Data Version 1
+    rmarkdown::render("week_3/reports/week_3_activity_3.Rmd", params = list(data_version = "v1", group_var="region"))
+    
     # Example: Render the report using Data Version 2
     rmarkdown::render("week_3/reports/week_3_activity_3.Rmd", params = list(data_version = "v2", group_var="region"))
 
@@ -78,4 +81,4 @@ Upon successful execution, the following files will be generated in the `week_3/
 
 ## 6. Assumptions and Limitations
 * **Assumptions:** The script assumes the raw data follows the naming convention `st422_week3_subscription_{version}.csv` and contains consistent column names across versions. It utilizes the `here` package, assuming the `.Rproj` file is at the root directory.
-* **Limitations** The script only 
+* **Limitations** It looks at the relationship between the group (e.g., Region) and the target (e.g., Tenure) in isolation. It does not account for other variables that might explain the difference (e.g., if one region has a higher average `monthly_fee_gbp` which actually drives the tenure difference).
