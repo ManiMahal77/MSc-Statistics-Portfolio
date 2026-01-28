@@ -178,7 +178,7 @@ ggplot(trimmed_plot_data, aes(x = y)) +
 
 ```
 
-# 2. Optimization of Rejection Sampling
+# 2. Optimisation of Rejection Sampling
 
 For a distribution with PDF $q(x)$ to be a valid proposal distribution for the target distribution with PDF $p(x)$, there must exist a finite constant $M$ such that the ratio $p(x)/q(x)$ is bounded for all $x$:
 
@@ -192,7 +192,11 @@ We know that the $t$-distribution with $\nu$ degrees of freedom has a finite con
 
 $$\lim_{x \to 0} \frac{p(x)}{q(x)} = \frac{1}{2\alpha C} \lim_{x\to 0} x^{\frac{1}{\alpha} - 1}$$
 
-So the limit of the ratio depends on the sign of $\frac{1}{\alpha} - 1$. Now we consider two cases:$\alpha=1$: In this case the limit reduces to $1/2C$ which is a finite positive constant. For the case when $x \to \infty$, the ratio goes to 0 because the exponential tail of $p(x)$ decays faster that the polynomial tail of $q(x)$. Since the ratio is a continuous function that is finite at $x=0$ and tends to 0 at infinity, it is bounded over its entire domain. Hence, a $t$-distribution is a valid proposal for $\alpha=1$.$\alpha > 1$: In this case, $\frac{1}{\alpha} - 1 < 0$. This means that$$\frac{1}{2\alpha C} \lim_{x\to 0} x^{\frac{1}{\alpha} - 1} = \infty$$so the ratio is unbounded. This means we cannot find a finite $M$ to satisfy the condition above for all $x$ close to 0. Hence, a $t$-distribution would not be a valid proposal for $\alpha > 1$.Hence, for rejection sampling to work we need to choose $\alpha=1$.
+So the limit of the ratio depends on the sign of $\frac{1}{\alpha} - 1$. Now we consider two cases:$\alpha=1$: In this case the limit reduces to $1/2C$ which is a finite positive constant. For the case when $x \to \infty$, the ratio goes to 0 because the exponential tail of $p(x)$ decays faster that the polynomial tail of $q(x)$. Since the ratio is a continuous function that is finite at $x=0$ and tends to 0 at infinity, it is bounded over its entire domain. Hence, a $t$-distribution is a valid proposal for $\alpha=1$.$\alpha > 1$: In this case, $\frac{1}{\alpha} - 1 < 0$. This means that
+
+$$\frac{1}{2\alpha C} \lim_{x\to 0} x^{\frac{1}{\alpha} - 1} = \infty$$
+
+so the ratio is unbounded. This means we cannot find a finite $M$ to satisfy the condition above for all $x$ close to 0. Hence, a $t$-distribution would not be a valid proposal for $\alpha > 1$.Hence, for rejection sampling to work we need to choose $\alpha=1$.
         
 To maximise the efficiency of the rejection sampler we need to minimise the constant $M$ where $M = \sup_x \frac{f(x)}{g(x)}$. Since $M$ will depend on the parameter $\nu$ of our proposal $g(x)$, we are looking for the value $\nu^*$ that minimises $M(\nu)$. To find the maximum of this ratio we differentiate with respect to $x$ and set to 0. Once we do this, we find that the critical values are at $x=1$ and $x=\nu$. Hence,
 
@@ -325,6 +329,7 @@ If we examine the ratio as $x \to \infty$ we can see that the numerator grows ex
 
 
 An importance sampling algorithm can be constructed to estimate the expectation of a function $\varphi(T)$, where $T \sim f_T(\cdot;2)$ using a proposal $g(t)$ which is the density of a $N(0,1)$ random variable. The fundamental principle of importance sampling is based on the identity:
+
     $$
     \begin{align*}
         \mathbb{E}_f[\varphi(T)] = \int \varphi(t)\frac{f_T(t)}{g(t)}g(t)dt = \mathbb{E}_g[\varphi(T)w(T)]

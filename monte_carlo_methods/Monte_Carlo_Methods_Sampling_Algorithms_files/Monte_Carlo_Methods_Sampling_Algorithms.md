@@ -4,7 +4,6 @@ Calum Smith
 2026-01-25
 
 ``` r
-rm(list=ls())
 library(ggplot2)
 library(dplyr)
 
@@ -205,7 +204,7 @@ ggplot(trimmed_plot_data, aes(x = y)) +
 
 ![](Monte_Carlo_Methods_Sampling_Algorithms_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-# 2. Optimization of Rejection Sampling
+# 2. Optimisation of Rejection Sampling
 
 For a distribution with PDF $q(x)$ to be a valid proposal distribution
 for the target distribution with PDF $p(x)$, there must exist a finite
@@ -239,9 +238,11 @@ $p(x)$ decays faster that the polynomial tail of $q(x)$. Since the ratio
 is a continuous function that is finite at $x=0$ and tends to 0 at
 infinity, it is bounded over its entire domain. Hence, a
 $t$-distribution is a valid proposal for $\alpha=1$.$\alpha > 1$: In
-this case, $\frac{1}{\alpha} - 1 < 0$. This means
-that$$\frac{1}{2\alpha C} \lim_{x\to 0} x^{\frac{1}{\alpha} - 1} = \infty$$so
-the ratio is unbounded. This means we cannot find a finite $M$ to
+this case, $\frac{1}{\alpha} - 1 < 0$. This means that
+
+$$\frac{1}{2\alpha C} \lim_{x\to 0} x^{\frac{1}{\alpha} - 1} = \infty$$
+
+so the ratio is unbounded. This means we cannot find a finite $M$ to
 satisfy the condition above for all $x$ close to 0. Hence, a
 $t$-distribution would not be a valid proposal for $\alpha > 1$.Hence,
 for rejection sampling to work we need to choose $\alpha=1$.
@@ -418,7 +419,9 @@ An importance sampling algorithm can be constructed to estimate the
 expectation of a function $\varphi(T)$, where $T \sim f_T(\cdot;2)$
 using a proposal $g(t)$ which is the density of a $N(0,1)$ random
 variable. The fundamental principle of importance sampling is based on
-the identity: $$
+the identity:
+
+    $$
     \begin{align*}
         \mathbb{E}_f[\varphi(T)] = \int \varphi(t)\frac{f_T(t)}{g(t)}g(t)dt = \mathbb{E}_g[\varphi(T)w(T)]
     \end{align*}
