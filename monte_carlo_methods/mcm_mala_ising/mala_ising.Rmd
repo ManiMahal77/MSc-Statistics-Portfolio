@@ -1,5 +1,5 @@
 ---
-title: "Assignment 2"
+title: "MALA and Ising"
 output: pdf_document
 ---
 
@@ -7,9 +7,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message=FALSE, dev = "png", dpi = 300)
 ```
 
-# Question 1
 
-## Part (a)
 Below is the function that implements a simple random walk Metropolis algorithm with the given proposals to target a standard multivariate normal distribution of dimension $p$.
 
 ```{r packages}
@@ -48,8 +46,6 @@ RWMetropolisHastings <- function(n=1000, p, l, Sigma=(l^2/p) * diag(1, nrow=p),
   return(list(X=X, accepted=count, acceptance_rate = count/(n-1), msjd=msjd))
 }
 ```
-
-## Part (b)
 
 ```{r, optimal scaling for p and l}
 p.vals <- c(1, 5, 20, 50, 100)
@@ -91,7 +87,6 @@ ggplot(results, aes(x=l, y=acc.rate, color=as.factor(p))) +
 ```
 The first graph illustrates the efficiency of the chain via the MSJD. When $l$ is low, the MSJD is also low because the chain moves too slowly. When $l$ is large the MSJD is low because the chain gets 'stuck' due to high rejection rates. The optimum of $l=2.38$ maximises the efficiency between acceptance rate and MSJD. We can see that the MSJD is maximised around $l=2.38$ in dimensions of $p \ge 5$ confirming that setting the scaling parameter near this value balances the step size against the rejection probability to maximise the mixing of the chain. The second graph shows that as we increase $l$ we decrease the acceptance rate. This makes sense intuitively because we are taking larger proposed jumps which means we have an increased probability of proposing states that are in the tails leading to frequent rejections.
 
-## Part (c)
 
 The acceptance probability for the MALA algorithm is given by
 $$
@@ -139,9 +134,6 @@ $$
 \min \left\{0, -\frac 12 \sum_{j=1}^{p}[y_j^2 - x_j^2] -\frac{1}{2\sigma_p^2}\sum_{j=1}^{p}\left(x_j-\left(1-\frac{\sigma^2_p}{2}\right)y_j\right)^2 - \left(y_j-\left(1-\frac{\sigma^2_p}{2}\right)x_j\right)^2\right\}
 $$
 
-
-
-## Part (d)
 
 Below is the implementation of the MALA. Here we consider different values for the dimension $p$ i.e., $p=1$ and $p=5$ and the scaling constant $l$.
 
@@ -237,9 +229,6 @@ print(comparison_table)
 
 ```
 
-# Question 2
-
-## Part (a)
 Below is an implementation of the systematic-scan Gibbs sampler for the Ising model.
 
 ```{r, Systematic-Scan Gibbs for Ising}
@@ -293,7 +282,7 @@ Systematic.Gibbs.Ising <- function(N=100, m=5, n=5, J, initial.state="random") {
 }
 ```
 
-## Part (b)
+
 
 ```{r, results of Systematic-Scan Gibbs for Ising, fig.width=12, fig.height=8}
 J.vals <- c(0.05, 0.5, 1)
@@ -354,7 +343,7 @@ par(mfrow=c(1,1))
 ```
 From the ACF plots above we can see that for $J=0.05$ the ACF drops almost immediately to 0 indicating rapid mixing. For $J=0.5$, the chains initialised at "All +1" and "All -1" exibit strong autocorrelation that decays very slowly indicating that the chain is 'sticky'. Finally, for $J=0.5$, the ACF plots are mostly empty for "All +1" and "All -1" confirming that the chain is stuck in their initial states and have not converged to the stationary distribution at all.
 
-## Part (c)
+
 
 The new algorithm is justified. The researcher defines a deterministic proposal for component $j$. Let $x^{(t)}$ be the current state and $x^{\prime}$ be the proposed state where the $j$-th state is flipped. The proposal distribution $q(x^{\prime}|x^{(t)})$ is
 
@@ -380,8 +369,6 @@ $$
 Therefore, as the algorithm allows for the exploration of the state space, corrects for the proposal using the acceptance probability $\alpha$ and allows for rejection, we satisfy the detailed balance condition for the target distribution $f(x)$. Hence, the chain will converge to the stationary distribution defined by the Ising model $f(x)$.
 
 
-
-## Part (d)
 
 ```{r, Gibbs and MH for Ising}
 Gibbs.MH.Ising <- function(N=100, m=5, n=5, J, initial.state="random") {
@@ -438,7 +425,7 @@ Gibbs.MH.Ising <- function(N=100, m=5, n=5, J, initial.state="random") {
 }
 ```
 
-```{r, results for Gibbs MH Ising}
+```{r, results for Gibbs MH Ising, fig.width=12, fig.height=8}
 J.vals <- c(0.9)
 initial.states <- c("random", "all_plus", "all_minus")
 initial.labels <- c("Random Start", "All +1 Start", "All -1 Start")
