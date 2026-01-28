@@ -23,7 +23,7 @@ This project uses `renv` for dependency management to ensure the analysis is rep
 * `here` (Relative file paths)
 
 **How to restore the environment:**
-1.  Open the project in RStudio.
+1.  Open the project in RStudio, make sure to double-click the `.Rproj` file to open it properly
 2.  Run the following command in the console to install the exact package versions used in this analysis:
     ```r
     renv::restore()
@@ -32,32 +32,35 @@ This project uses `renv` for dependency management to ensure the analysis is rep
 ## 4. Run Steps
 To replicate the analysis:
 
-1.  **Verify Directory Structure:** Ensure your project has the following structure relative to the project root:
-    ```
-    week_3
-    ├── data
-    │   ├── processed
-    │   └── raw
-    │       ├── st422_week3_subscription_v1.csv
-    │       ├── st422_week3_subscription_v2.csv
-    │       └── st422_week3_subscription_v3.csv
-    ├── HANDOVER.md
-    ├── HANDOVER_LOG.md
-    ├── outputs
-    │   ├── figures
-    │   └── tables
-    ├── README.md
-    ├── reports
-    │   └── week_3_activity_3.Rmd
-    └── src
-    ```
+1. **Verify Directory Structure:** Ensure your project has the following structure relative to the project root:
 
+   ```text
+   week_3
+   ├── data
+   │   ├── processed
+   │   └── raw
+   │       ├── st422_week3_subscription_v1.csv
+   │       ├── st422_week3_subscription_v2.csv
+   │       └── st422_week3_subscription_v3.csv
+   ├── HANDOVER.md
+   ├── HANDOVER_LOG.md
+   ├── outputs
+   │   ├── figures
+   │   └── tables
+   ├── README.md
+   ├── reports
+   │   └── week_3_activity_3.Rmd
+   └── src
+   ```
 2.  **Execute via R Console:**
     You can generate the HTML report and outputs for a specific dataset version by running the `rmarkdown::render` command in your RStudio Console. 
     
     *Make sure to change the `data_version` parameter as needed ("v1", "v2", or "v3").*
 
     ```r
+    # Example: Render the report using Data Version 1
+    rmarkdown::render("week_3/reports/week_3_activity_3.Rmd", params = list(data_version = "v1", group_var="region"))
+    
     # Example: Render the report using Data Version 2
     rmarkdown::render("week_3/reports/week_3_activity_3.Rmd", params = list(data_version = "v2", group_var="region"))
 
@@ -78,4 +81,4 @@ Upon successful execution, the following files will be generated in the `week_3/
 
 ## 6. Assumptions and Limitations
 * **Assumptions:** The script assumes the raw data follows the naming convention `st422_week3_subscription_{version}.csv` and contains consistent column names across versions. It utilizes the `here` package, assuming the `.Rproj` file is at the root directory.
-* **Limitations** The script only 
+* **Limitations** It looks at the relationship between the group (e.g., Region) and the target (e.g., Tenure) in isolation. It does not account for other variables that might explain the difference (e.g., if one region has a higher average `monthly_fee_gbp` which actually drives the tenure difference).
