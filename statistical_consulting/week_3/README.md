@@ -1,7 +1,7 @@
 # Week 3 Activity 3: Subscription Data Analysis
 
 ## 1. Project Summary
-This project performs an exploratory data analysis (EDA) on customer subscription datasets (`st422_week3_subscription_*.csv`). It automates the cleaning of raw data, generates a demographic summary table stratified by region, and produces visualizations for key distributions (tenure and monthly fees). The goal is to ensure reproducibility in reporting customer characteristics and retention metrics across different data versions.
+This project performs an exploratory data analysis (EDA) on customer subscription datasets (`st422_week3_subscription_*.csv`). It automates the cleaning of raw data, generates a demographic summary table grouped by region, and produces visualisations for key distributions (tenure and monthly fees). The goal is to ensure reproducibility in reporting customer characteristics and retention metrics across different data versions.
 
 ## 2. Data Description
 The analysis uses CSV files located in `week_3/data/raw/`. 
@@ -53,9 +53,9 @@ To replicate the analysis:
    └── src
    ```
 2.  **Execute via R Console:**
-    You can generate the HTML report and outputs for a specific dataset version by running the `rmarkdown::render` command in your RStudio Console. 
+    You can generate the HTML report and outputs for a specific dataset version by running the `rmarkdown::render` command in your RStudio Console. Below are exmaple use cases for each version of the data. Please note that you can change the following parameters in the YAML header in the top of the report `.Rmd` file to suit your own preferences.
     
-    *Make sure to change the `data_version` parameter as needed ("v1", "v2", or "v3"). Moreover, you can change the following parameters in       the YAML header in the top of the report .Rmd file to suit the analysis you want to perform.:*
+    *Make sure to change the `data_version` parameter as needed ("v1", "v2", or "v3"):*
     ```r
     params:
      data_version: "v1"
